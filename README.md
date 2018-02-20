@@ -1,9 +1,9 @@
 # Weather Central App
 
-## How to setup the server and the weather  stations 
+`##` How to setup the server and the weather  stations 
 [Setup BACKEND](/wcentral/README.md)
 
-## How to setup client app
+`##` How to setup client app
 
 [Setup FRONTEND](/wclient/README.md)
 
