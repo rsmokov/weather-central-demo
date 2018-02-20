@@ -1,7 +1,6 @@
 # Weather Central App
 
 `##` How to setup the server and the weather  stations 
-
 [Setup BACKEND](/wcentral/README.md)
 
 `##` How to setup client app
@@ -13,3 +12,5 @@
 Just type in the folowing command :
 
     npm start
+## License
+[MIT. Copyright (c)](https://opensource.org/licenses/MIT) Radoslav Smokov.
