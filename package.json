@@ -1,0 +1,37 @@
+{
+  "name": "simple-weather-central",
+  "version": "1.0.0",
+  "description": "Weather Central web application, collecting data from several dummy weather stations for demo purposes.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rsmokov/weather-central-demo.git"
+  },
+  "keywords": [
+    "weather",
+    "app",
+    "public",
+    "demo",
+    "backend",
+    "and",
+    "frontend",
+    "solution"
+  ],
+  "author": "Radoslav Smokov",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/rsmokov/weather-central-demo/issues"
+  },
+  "homepage": "https://github.com/rsmokov/weather-central-demo#readme",
+  "dependencies": {
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-es6-template-engine": "^2.0.2",
+    "node-mysql": "^0.4.2",
+    "open": "0.0.5",
+    "socket.io": "^2.0.4"
+  }
+}
