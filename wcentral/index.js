@@ -1,34 +1,40 @@
+"use strict";
 // Weather Central Server
 function WCentralServer() {
     //Load modules
-    const open = require('open'),
-        express = require('express'),
+    const express = require('express'),
         msql = require('node-mysql'),
         bodyParser = require('body-parser'),
         socketIo = require('socket.io');
     //Init express server
-    const port = 8000;
-    const app = express();
-    this.run = function () {
-        app.use(express.static(__dirname + '/public'));
-        app.set('views', __dirname + '/../wclient/views');
-        app.engine('html', require('ejs').renderFile);
-        app.set('view engine', 'html');
+    const app = express(),
+          server = require('http').Server(app),
+          io = require('socket.io')(server);
 
-        app.get('/', function (req, res) {
-            res.render('index.html');
-        });
+    this.run = function (port) {
+        port = (typeof port == 'undefined' ? 3000 : port);
+        
+        /* app.get('/', function (req, res) {
+            //res.render('index.html');
+        }); */
 
         // Handle 404 - Keep this as a last route
-        app.use(function (req, res, next) {
-            res.status(404);
-            res.render('404.html');
-        });
+       /*  app.use(function (req, res, next) {
+            console.log(req);
+            res.status(404).json({ error: 'Not existing.' });
+        }); */
+        app.use(function(err, req, res, next) {
+            res.status(err.status || 500);
+            res.render('error', {
+              message: err.message,
+              error: {}
+            });
+          });
         app.listen(port);
-        open('http://localhost:' + port);
 
         console.log('Wheater central started.');
     }
+   
 
 }
 

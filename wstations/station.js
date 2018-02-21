@@ -1,39 +1,44 @@
-function StationEmitter(id) {
+"use strict";
 
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
+
+function StationEmitter(id) {
+    var _self = this;
     const months = {
-        01: {
+        1: {
             temp: 1.9,
             hum: 77.9
         },
-        02: {
+        2: {
             temp: 2.8,
             hum: 75
         },
-        03: {
+        3: {
             temp: 5.7,
             hum: 73.3
         },
-        04: {
+        4: {
             temp: 10.3,
             hum: 73.7
         },
-        05: {
+        5: {
             temp: 15.4,
             hum: 74.8
         },
-        06: {
+        6: {
             temp: 19.9,
             hum: 72.5
         },
-        07: {
+        7: {
             temp: 22.4,
             hum: 69.7
         },
-        08: {
+        8: {
             temp: 22.3,
             hum: 73.1
         },
-        09: {
+        9: {
             temp: 18.3,
             hum: 77.6
         },
@@ -53,9 +58,15 @@ function StationEmitter(id) {
     // Extract data for the current month
     const currMonth = months[new Date().getMonth()];
 
-    this.id = id;
-    this.temp = null;
-    this.hum = null;
+    // station props
+    _self.id = id;
+    _self.temp = null;
+    _self.hum = null;
+    _self.status = 0;
+
+    // functional props
+    _self.interval = null;
+    _self.speed = 2;
 
     // Generate random values with different faktors for humidity and temperature for more realistic results
     function getRandomInt(val, factorMin, factorMax) {
@@ -64,14 +75,47 @@ function StationEmitter(id) {
         return (Math.floor(Math.random() * (max - min + 1)) + min).toFixed(2);
     }
 
-    this.bcast = function () {
-        setInterval(function () {
-            let temp = getRandomInt(currMonth['temp'], .3, 1.5),
+    function beam(station, interval) {
+        interval = setInterval(function () {
+            let temp = null,
+                hum = null;
+            if (station.status === 1) {
+                temp = getRandomInt(currMonth['temp'], .3, 1.5);
                 hum = getRandomInt(currMonth['hum'], .8, 1.2);
-
-            console.log("station: " + id + "\n temp: " + temp + "\n humidity: " + hum + "\n");
+            }
+            _self.emit('send', {
+                id: station['id'],
+                status: station['status'],
+                temp: temp,
+                hum: hum
+            });
+            // console.log("station: " + station.id + "\n temp: " + temp + "\n humidity: " + hum + "\n status: " + station.status + "\n");
         }, 2000);
-
+    }
+    // broadcast values
+    _self.bcast = function () {
+        _self.status = 1;
+        const station = {
+            id: _self.id,
+            status: _self.status
+        }
+        beam(station, _self.interval);
+    }
+    // turn off station
+    _self.stop = function () {
+        _self.status = 0;
+        clearInterval(_self.interval);
+    }
+    // maintance mode
+    _self.maintance = function () {
+        _self.status = 2;
+        clearInterval(_self.interval);
+        const station = {
+            id: _self.id,
+            status: 2
+        };
+        beam(station, _self.interval);
     }
 }
+util.inherits(StationEmitter, EventEmitter);
 module.exports = StationEmitter;

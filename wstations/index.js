@@ -1,3 +1,4 @@
+"use strict";
 // Weather Station Server
 function WStationsServer() {
     //Load modules
@@ -6,41 +7,59 @@ function WStationsServer() {
         stationEmitter = require('./station'),
         bodyParser = require('body-parser'),
         socketIo = require('socket.io'),
-        es6Renderer = require('express-es6-template-engine');
+        exphbs = require('express-handlebars');
 
-    const port = 3000;
     const app = express();
+    const stations = [];
 
-    this.run = function () {
+    //Generate virtual stations
+    const generate = function (amount) {
+        for (let i = 0; i < amount; i++) {
+            const station = new stationEmitter(i);
+            station.bcast();
+            station.on('send', function (data) {
+                stations[i] = data;
+                /* stations.push(data); */
+                console.log(stations);
+            });
+        }
+
+    }
+
+    this.run = function (port) {
+        port = (typeof port == 'undefined' ? 3000 : port);
         // Espress setup
+        app.engine('handlebars', exphbs( /*{defaultLayout: 'main'}*/ ));
+        app.set('view engine', 'handlebars');
         app.use(express.static(__dirname + '/public'));
         app.set('views', __dirname + '/views');
-        app.engine('html', es6Renderer);
-        app.set('view engine', 'html');
 
         app.get('/', function (req, res) {
+            generate(2);
             res.render('index', {
-                locals: {
-                    title: 'Welcome!'
+                helpers: {
+                    wstations: function () {
+                        return stations;
+                    }
                 }
             });
         });
 
+        //
 
         // Handle 404 - Keep this as a last route
         app.use(function (req, res, next) {
             res.status(404);
-            res.render('404.html');
+            res.render('404');
         });
 
         //Init weather stations management server
         app.listen(port);
         open('http://localhost:' + port);
         console.log('Weather stations management server started.');
-        station1 = new stationEmitter(1).bcast();
-        station2 = new stationEmitter(2).bcast();
-        station3 = new stationEmitter(3).bcast();
+
     }
+
 
 }
 
