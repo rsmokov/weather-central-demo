@@ -13,7 +13,10 @@ function WStationsServer() {
     const stations = [];
 
     //Generate virtual stations
-    const generate = function (amount) {
+    function generate (amount) {
+        const serverport = 5000;
+        const socket = socketIo('http://localhost:' + serverport);
+        
         for (let i = 0; i < amount; i++) {
             const station = new stationEmitter(i);
             station.bcast();
