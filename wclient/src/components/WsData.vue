@@ -85,10 +85,10 @@
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'StationHistory',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'Last 24 h data of station Nr:'
     }
   }
 }

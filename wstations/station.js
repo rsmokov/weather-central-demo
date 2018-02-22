@@ -1,7 +1,6 @@
 "use strict";
-
-var util = require('util');
-var EventEmitter = require('events').EventEmitter;
+const util = require('util');
+const EventEmitter = require('events').EventEmitter;
 
 function StationEmitter(id) {
     var _self = this;
@@ -55,8 +54,10 @@ function StationEmitter(id) {
             hum: 747.5
         }
     }
-    // Extract data for the current month
-    const currMonth = months[new Date().getMonth()];
+    // Simulate realistic values based on season month and daytime
+    const date = new Date();
+    const currMonth = months[date.getMonth()];
+    let currTime = date.getHours();
 
     // station props
     _self.id = id;
@@ -66,22 +67,24 @@ function StationEmitter(id) {
 
     // functional props
     _self.interval = null;
-    _self.speed = 2;
 
     // Generate random values with different faktors for humidity and temperature for more realistic results
     function getRandomInt(val, factorMin, factorMax) {
-        const min = val * factorMin,
-            max = val * factorMax;
+        let daytimeFactor = Math.sqrt(currTime) ;
+        const min = val * factorMin + daytimeFactor,
+            max = val * factorMax + daytimeFactor;
         return (Math.floor(Math.random() * (max - min + 1)) + min).toFixed(2);
     }
 
-    function beam(station, interval) {
+    function beam(station, interval, speed) {
         interval = setInterval(function () {
             let temp = null,
                 hum = null;
             if (station.status === 1) {
-                temp = getRandomInt(currMonth['temp'], .3, 1.5);
-                hum = getRandomInt(currMonth['hum'], .8, 1.2);
+                temp = getRandomInt(currMonth['temp'], .8, 1.2);
+                hum = getRandomInt(currMonth['hum'], .7, 1.2);
+                if(hum > 100) {hum = 100;}
+                if(hum < 10) {hum = 10;}
             }
             _self.emit('send', {
                 id: station['id'],
@@ -89,17 +92,16 @@ function StationEmitter(id) {
                 temp: temp,
                 hum: hum
             });
-            // console.log("station: " + station.id + "\n temp: " + temp + "\n humidity: " + hum + "\n status: " + station.status + "\n");
-        }, 2000);
+        }, speed * 1000);
     }
     // broadcast values
-    _self.bcast = function () {
+    _self.bcast = function (speed) {
         _self.status = 1;
         const station = {
             id: _self.id,
             status: _self.status
         }
-        beam(station, _self.interval);
+        beam(station, _self.interval, speed = 2);
     }
     // turn off station
     _self.stop = function () {
@@ -114,8 +116,9 @@ function StationEmitter(id) {
             id: _self.id,
             status: 2
         };
-        beam(station, _self.interval);
+        beam(station, _self.interval, speed = 10);
     }
 }
+//Let Station emitter enhirit from the Event emitter /
 util.inherits(StationEmitter, EventEmitter);
 module.exports = StationEmitter;

@@ -6,24 +6,28 @@ function WStationsServer() {
         express = require('express'),
         stationEmitter = require('./station'),
         bodyParser = require('body-parser'),
-        socketIo = require('socket.io'),
+        io = require('socket.io-client'),
         exphbs = require('express-handlebars');
 
     const app = express();
-    const stations = [];
+    this.stations = [];
+
+    const _self = this;
 
     //Generate virtual stations
-    function generate (amount) {
-        const serverport = 5000;
-        const socket = socketIo('http://localhost:' + serverport);
+    this.generate = function (amount) {
+        const serverport = 3000;
+        const socket = io('http://localhost:' + serverport);
         
         for (let i = 0; i < amount; i++) {
-            const station = new stationEmitter(i);
-            station.bcast();
-            station.on('send', function (data) {
-                stations[i] = data;
-                /* stations.push(data); */
-                console.log(stations);
+            const StEmitter = new stationEmitter(i);
+            StEmitter.bcast();
+            socket.on('connect', function(data) {
+                socket.emit('join', `Weather station-${i} connected.`);
+             });
+             StEmitter.on('send', function (data) {
+                _self.stations[i] = data;
+                socket.emit('sending', _self.stations);               
             });
         }
 
@@ -38,11 +42,12 @@ function WStationsServer() {
         app.set('views', __dirname + '/views');
 
         app.get('/', function (req, res) {
-            generate(2);
+            _self.generate(5);
             res.render('index', {
                 helpers: {
                     wstations: function () {
-                        return stations;
+                        
+                        return _self.stations;
                     }
                 }
             });

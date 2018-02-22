@@ -11,16 +11,17 @@
 <body>
     <h1>Weather Stations Control Panel</h1>
     {{#if (wstations)  }}
-    <ul>
-        {{#each this}}     
-            {{#wstations}}
-             <li>Station ID: {{id}}</li>
-             <li>Station status: {{status}}</li>
-             <li>Temperature: {{temp}}C</li>
-             <li>Humidity: {{hum}}%</li>   
-            {{/wstations}}          
+    
+        {{#each wstations}}  
+        <ul>
+             <li>Station ID: {{this.id}}</li>
+             <li>Station status: {{this.status}}</li>
+             <li>Temperature: {{this.temp}}C</li>
+             <li>Humidity: {{this.hum}}%</li>  
+            </ul>   
+            <br>    
         {{/each}}
-    </ul>
+    
     {{/if}}
 </body>
 </html>

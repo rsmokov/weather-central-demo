@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import WsList from '@/components/WsList'
+import WsData from '@/components/WsData'
 
 Vue.use(Router)
 
@@ -8,8 +9,13 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'StationsList',
+      component: WsList
+    },
+    {
+      path: '/station',
+      name: 'StationData',
+      component: WsData
     }
   ]
 })
