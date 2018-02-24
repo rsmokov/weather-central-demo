@@ -1,0 +1,20 @@
+{
+  "name": "wstations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "font-awesome": "^4.7.0",
+    "mdbootstrap": "^4.5.0",
+    "socket.io": "^2.0.4",
+    "vue": "^2.5.13",
+    "vue-axios": "^2.0.2",
+    "vue-socket.io": "^2.1.1-b"
+  }
+}

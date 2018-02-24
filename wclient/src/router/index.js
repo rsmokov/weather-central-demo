@@ -13,7 +13,7 @@ export default new Router({
       component: WsList
     },
     {
-      path: '/station',
+      path: '/station/:id',
       name: 'StationData',
       component: WsData
     }

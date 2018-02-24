@@ -29,9 +29,9 @@
   "dependencies": {
     "express": "^4.16.2",
     "express-es6-template-engine": "^2.0.2",
-    "express-handlebars": "^3.0.0",
     "node-mysql": "^0.4.2",
     "open": "0.0.5",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "sqlite3": "^3.1.13"
   }
 }

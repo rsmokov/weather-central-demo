@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>weather-client-web</title>
+    <link rel="stylesheet" href="./node_modules/mdbootstrap/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="./node_modules/mdbootstrap/css/mdb.min.css" />    
+  </head>
+  <body class="container grey lighten-3">    
+    <div id="app" >
+      <div class="container">
+        <h1 class="h3-responsive mt-3" >Demo Stations - Control Panel</h1>
+        <hr>
+        <div v-if="isConnected">
+          <ul class="mt-5 col-md-6 mx-auto py-3 card" v-if="stations && stations.length > 0">
+          <li class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="station in stations" :key="station.id">
+            <div class="col-sm-4 row">
+              <div class="col-12 small">
+                Station ID - {{station.id}} 
+              </div>
+               <div class="col-12">
+                    <span v-if="parseInt(station.status) === 1" class="badge badge-success p-2">online</span>
+                    <span v-if="parseInt(station.status) === 0" class="badge grey lighten-1 p-2">offline</span>
+                    <span v-if="parseInt(station.status) === 2" class="badge badge-danger p-2">maintance</span>
+               </div>                
+            </div>
+             <button class="btn btn-danger btn-sm" v-on:click="maintance(station.id)">maintance</button>  
+             <button class="btn btn-success btn-sm" v-on:click="backon(station.id)">backon</button>  
+             <button class="btn btn-sm" v-on:click="turnoff(station.id)">off</button>  
+          </li>
+        </ul>
+        <p v-else class="h3-responsible text-danger">
+          <i class="fa fa-low-vision" aria-hidden="true"></i>
+          Sorry, no live stations at the moment.
+        </p>
+    </div>     
+      </div>
+    </div>
+    <!-- built files will be auto injected -->
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <script src="./node_modules/vue-socket.io/dist/build.js"></script>
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="./app/app.js"></script>
+  </body>  
+</html>
+
