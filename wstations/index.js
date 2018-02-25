@@ -22,10 +22,11 @@ function WStationsServer() {
         const StEmitter = [];
         for (let i = 0; i < amount; i++) {
 
-            StEmitter[i] = new stationEmitter(i);
-            StEmitter[i].bcast(speed); 
-                        
             const socket = io('http://localhost:' + serverport);  
+            StEmitter[i] = new stationEmitter(i);
+            StEmitter[i].bcast(speed);                         
+            socket.emit('wsCreated', i);
+
             // weather station conecting to the "Weather Central Server" 
             socket.on('connect', function (data) {
                 console.log(`Weather station-${i} connected.`)
@@ -55,8 +56,7 @@ function WStationsServer() {
                     StEmitter[i].turnoff();
                 }
                 _self.stations = [];
-                socket.emit('wsRespondAlloff');
-                
+                socket.emit('wsRespondAlloff');                
             });
         }        
     }

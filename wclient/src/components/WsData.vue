@@ -14,15 +14,29 @@
         </div>  
         <div class="col-sm-6 mb-3">
             
-            <h1 class="h1-responsive text-center" :class="classHeader">          
-              <i class="fa" :class="station.status !== 1 ? 'fa-power-off': 'fa-wifi'" aria-hidden="true"></i>
+            <h1 class="h2-responsive text-center m-0" :class="classHeader">          
+              <i class="fa" :class="station && station.status !== 1 ? 'fa-power-off': 'fa-wifi'" aria-hidden="true"></i>
               Weather Station  
-              <span v-if="!station.loc">ID: {{station.id}}</span>
-              <span v-else>{{station.loc}}</span>
+              <span v-if="!loc_name || changename">ID: {{stationId}}</span>
+              <span v-else v-on:click.self="changename = true" class="underlined">{{loc_name}}</span>
             </h1>
+                <form class="row col-md-8 mx-auto my-0 p-0" v-if="!loc_name || changename" v-on:submit="stationName(station.id)">
+                  <div class="col-md-9 m-auto p-0 md-form">
+                      <input
+                        @blur="changename = false"
+                        @focus="changename = true"
+                        type="text" placeholder="Type a name" v-model="loc_name_temp"
+                        class="form-control h-100 m-auto p-0"> 
+                  </div>
+                  <div class="row" v-if="changename">
+                      <button v-on:click="stationName(station.id)" class="btn btn-info btn-sm col-auto" v-bind:disabled="!loc_name_temp || loc_name_temp.length < 2">
+                          <i class="fa fa-check" aria-hidden="true"></i>
+                      </button>
+                  </div>                 
+              </form>  
         </div>    
         <div class="col-sm-3  mb-3">
-          <router-link class="btn btn-warning" :to="{ name: 'StationsList'}">
+          <router-link class="btn btn-amber" :to="{ name: 'StationsList'}">
                 back
             </router-link>
         </div>
@@ -30,22 +44,22 @@
      
       <hr>
       <div class="row">
-        <div class="col-md-7  text-right" v-if="station && station.status === 1">
+        <div class="col-sm-12 col-md-8 col-lg-6 text-right" v-if="station && station.status === 1">
           <div class="h5-responsive">Temperature for today: {{today}}</div>
             <div class="row card d-felx flex-row">
-              <img v-if="wicon" class="col-4 grey lighten-4" :src="'../static/meteo-icons/'+wicon+'.svg'" alt="weather icon">
-              <div class="col-8 white px-4">
-                  <div class="display-3 d-flex justify-content-between">
+              <img v-if="wicon" class="col-md-4 h-75 img-fluid grey lighten-4" :src="'../static/meteo-icons/'+wicon+'.svg'" alt="weather icon">
+              <div class="col-md-8 white px-4">
+                  <div class="display-4 d-flex justify-content-between">
                   <i v-if="station.temp < 5" class="fa fa-thermometer-empty light-blue-text p-3" aria-hidden="true"></i>
                   <i v-if="station.temp > 5 &&  station.temp < 10" class="fa fa-thermometer-quarter green-text p-3" aria-hidden="true"></i>
                   <i v-if="station.temp > 10 &&  station.temp < 15" class="fa fa-thermometer-half light-green-text p-3" aria-hidden="true"></i>
                   <i v-if="station.temp > 15 &&  station.temp < 25" class="fa fa-thermometer-three-quarters orange-text p-3" aria-hidden="true"></i>
                   <i v-if="station.temp > 25" class="fa fa-thermometer-full deep-orange-text p-3" aria-hidden="true"></i>
-                  <span class="display-1">{{station.temp}}<span class="small">&#8451;</span></span>                
+                  <span class="h5-responsive">{{station.temp}}<span class="small">&#8451;</span></span>                
                   </div>
-                  <div class="h1-responsive d-flex justify-content-between"> 
+                  <div class="h2-responsive d-flex justify-content-between"> 
                       <i class="fa fa-tint p-3 indigo-text" aria-hidden="true"></i>
-                      <span class="">{{station.hum}}%</span>
+                      <span >{{station.hum}}%</span>
                   </div>
               </div>
             </div>
@@ -53,9 +67,9 @@
       </div>
       <div class="row my-5">
         <div class="col-12">
-            <p class="h3-responsive">Temperature and Humidity of the lase 24 hours</p>
+            <p class="h3-responsive">Temperature and Humidity for the last 24 hours</p>
         </div>
-        <div class="col-12 row mb-5">
+        <div class="col-12  mb-5 card">
               <chart-data :w-data="stationData"></chart-data>
         </div>
         
@@ -64,53 +78,57 @@
         <div class="container">
             <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
             <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
-            <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">
-            Amedia Weather Icons</span> by 
+            <span class="d-none d-sm-inline" xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/StillImage" property="dct:title" rel="dct:type">
+            Amedia Weather Icons by </span>
             <a xmlns:cc="http://creativecommons.org/ns#" href="http://utvikling.amedia.no" property="cc:attributionName" rel="cc:attributionURL">
             Amedia Utvikling</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-            Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+            Creative Commons <span class="d-none d-sm-inline">Attribution-NonCommercial-ShareAlike </span>
+            4.0<span class="d-none d-sm-inline"> International License</span></a>.
         </div>
       </footer>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import ChartData from '@/components/DataChart'
+
 export default {
   name: "StationHistory",
   components: { ChartData },   
   data() {
     return {
       msg: "",
+      stationId: null,
       station: {},
-      isConnected: false,
       stationData: {
         'temp': [],
-        'hum': []
-      }
+        'hum': [],
+        'record_time': []
+      },
+      changename: false,
+      loc_name: null,
+      loc_name_temp: null
     };
   },
   sockets: {
     connect: function(data) {
-      this.isConnected = true;
       this.msg = `<i class="fa fa-list-ul" aria-hidden="true"></i> Waiting for Weather stations`;
     },
     error: function() {
-      this.isConnected = false;
       this.station = {};
       this.msg = `<i class="fa fa-frown-o" aria-hidden="true"></i> Some error occured!`;
     },
     disconnect: function() {
-      this.isConnected = false;
       this.station = {};
       this.msg = "Disconected from the weather central.";
     },
     reconnecting: function() {
-      this.isConnected = false;
       this.msg = "Reconnecting to the weather central...";
     },
     broadClient: function(data) {
-      this.station = data[this.$route.params.id];
+      const id = this.$route.params.id;
+      this.station = data[id]
     }
   },
   computed: {
@@ -133,27 +151,28 @@ export default {
       },
       wicon: function() {
         switch (true) {
-          case this.station.hum < 50:
+          case this.station.hum <= 50:
             return "1";
             break;
-          case (this.station.hum > 50 && this.station.hum < 72 ) && (this.station.temp > 3):
+          case (this.station.hum > 50 && this.station.hum <= 72 ) && (this.station.temp > 3):
             return "2";
             break;
           case (this.station.hum > 72  ) && (this.station.temp > 3):
             return "4";
             break;
-          case (this.station.hum > 50 && this.station.hum < 72  ) && (this.station.temp < 3):
+          case (this.station.hum > 50 && this.station.hum < 72  ) && (this.station.temp <= 3):
             return "5";
             break;
-          case (this.station.hum > 72  ) && (this.station.temp < 3):
+          case (this.station.hum > 72  ) && (this.station.temp <= 3):
             return  "6";
             break;
-          case (this.station.hum < 68  ) && ( new Date().getHours() > 17):
+          case (this.station.hum <= 68  ) && ( new Date().getHours() > 17):
             return  "7";
             break;
         }
       },
       classHeader: function() {
+        if(this.station)
           switch (this.station.status) {
             case 0:
               return 'grey-text';
@@ -167,19 +186,58 @@ export default {
           }
       }
   },  
-  watch: {
-    // whenever question changes, this function will run
-    stations: function (newData, oldData) {
-      this.stationData['temp'].push(newData.temp);
-      this.stationData['hum'].push(newData.hum);
+  methods: {
+    getData: function() {
+           axios.get(`http://localhost:3000/wsdata/${this.$route.params.id}`)
+            .then(res => {
+                const data = res.data;
+                data.forEach(row => {
+                  this.stationData['temp'].push(row['temp']);
+                  this.stationData['hum'].push(row['hum']);
+                  this.stationData['record_time'].push(row['record_time']);                  
+                });
+            })
+            .catch(e => {
+              console.log(e);
+            });
+    },
+    stationName: function(id) {
+        axios.put(`http://localhost:3000/changename/1`,
+         {loc_name: this.loc_name_temp},
+         {headers:{'Content-Type': 'application/json; charset=utf-8'}}
+         )
+            .then(res => {
+                this.getStation();
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        this.changename = false;
+    },
+    getStation: function() {
+          axios.get(`http://localhost:3000/wsunit/${this.$route.params.id}`)
+            .then(res => {
+                const data = res.data;
+                this.loc_name = data.loc_name;                
+            })
+            .catch(e => {
+              console.log(e);
+            });
     }
   },
-  methods: {
+  mounted: function() {
+      this.getData();
+      this.getStation();
+      this.stationId = this.$route.params.id;
+      this.locName =  this.$route.params.loc_name;
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.underlined{
+  cursor: pointer;
+  border-bottom: 1px solid grey;
+}
 </style>

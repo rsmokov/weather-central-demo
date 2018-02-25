@@ -16,6 +16,13 @@
           <button class="btn blue-grey darken-1" v-on:click.self="generate(7)">7 Stations</button>
           <button class="btn blue-grey darken-3" v-on:click.self="generate(10)">10 Stations</button>
       </div>
+      <hr>
+      <div class="row">
+              <button class="btn btn-blue-grey btn-small d-block mx-auto my-5" v-on:click="clearall()">Clear data records for all stations</button>              
+            </div>
+            <div class="row">
+              <p class="col-12 text-danger text-center" v-for="(msg, index) in dbmsg" :key="index">{{msg}}</p>
+            </div>
     </div>
     <div v-if="isConnected">
           <div v-if="stations && stations.length > 0">
@@ -39,7 +46,7 @@
             <samp class="text-center blue-grey-text d-block">At least one station must be "online" or in "maintance mode"!</samp>
             <div class="row">
               <button class="btn btn-danger btn-small d-block mx-auto my-5" v-on:click="alloff()">Turn all stations off</button>
-            </div>
+            </div>            
         </div>        
     </div>  
    
@@ -58,7 +65,8 @@ export default {
       msg: `<i class="fa fa-frown-o" aria-hidden="true"></i> No connection to the weather central!`,
       stations: [],
       isConnected: false,
-      generated: false
+      generated: false,
+      dbmsg : null
     };
   },
   sockets: {
@@ -98,7 +106,14 @@ export default {
       this.stations = [];
       this.msg = `<i class="fa fa-signal" aria-hidden="true"></i> No weather station is broadcasting right now.`;     
       this.generated = false;
-      }
+      },
+    dbDeleteResp: function(data) {
+        this.dbmsg = data;
+        const _self = this;
+        setTimeout(function() {
+           _self.dbmsg = null;
+        }, 3000);
+    }  
   },
   methods: {
     generate(amount) {
@@ -124,6 +139,9 @@ export default {
     },
     alloff() {
       this.$socket.emit("alloff");
+    },
+    clearall() {
+      this.$socket.emit("clearall");
     }
   }
 }

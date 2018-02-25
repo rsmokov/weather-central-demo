@@ -13,33 +13,37 @@
       </div>
     </div>  
     <div class="col-auto">
-        <h1 class="h3-responsive text-center mt-3" v-html="msg"></h1>  
+        <h1 class="h3-responsive text-center mt-3" >List of all weather stations</h1>  
+        <p class="blue-grey-text" v-html="msg"></p>
     </div>    
   </div>
   <div class="container">   
     <hr>
-    <div v-if="isConnected">
-          <ul class="mt-5 col-md-6 mx-auto py-3 card" v-if="stations && stations.length > 0">
+    <div v-if="stations.length > 0">
+          <ul class="mt-5 col-md-6 col-sm-12 mx-auto py-3 card" v-if="stations && stations.length > 0">
           <li class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="station in stations" :key="station.id" >
-            <div class="col-sm-4 row">
-              <div class="col-12 small">
+            <div class="col-sm-4 row align-content-center">
+              <div class="col-12 small" v-if="station.id !== undefined">
                 Station ID - {{station.id}} 
               </div>
                <div class="col-12">
-                    <span v-if="parseInt(station.status) === 1" class="badge badge-success p-2">online</span>
-                    <span v-if="parseInt(station.status) === 0" class="badge grey lighten-1 p-2">offline</span>
-                    <span v-if="parseInt(station.status) === 2" class="badge badge-danger p-2">maintance</span>
+                    <span v-if="station.status === undefined || station.status === 0" class="badge grey lighten-1 p-2">offline</span>
+                    <span v-if="station.status !== undefined && station.status === 1" class="badge badge-success p-2">online</span>
+                    <span v-if="station.status !== undefined && station.status === 2" class="badge badge-danger p-2">maintance</span>
                </div>                
             </div>        
             <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2">
-              <input type="text" placeholder="Type a location name" v-model="station.loc"  class="form-control m-0 p-0">   
+              <div class="row text-right pr-0 pr-xl-5">
+                  <div class="col-12">Temperature: <span v-if="station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
+                  <div class="col-12">Humidity: <span v-if="station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
+              </div>             
             </div>    
-            <router-link class="col-auto btn btn-sm btn-primary" :to="{ name: 'StationData', params: { id: station.id }}">
+            <router-link class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
                 Last 24h
             </router-link>            
           </li>
         </ul>
-        <p v-else class="h3-responsible text-danger">
+        <p v-else class="h4-responsive text-danger text-center">
           <i class="fa fa-low-vision" aria-hidden="true"></i>
           Sorry, no live stations at the moment.
         </p>
@@ -51,44 +55,62 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "StationsList",
   data() {
     return {
-      msg: `<i class="fa fa-frown-o" aria-hidden="true"></i> No connection to the weather central!`,
+      msg: `<span class="px-3"></span>`,
       stations: [],
-      isConnected: false
+      stationStatus: []
     };
   },
   sockets: {
     connect: function(data) {
-      this.isConnected = true;
-      this.msg = `<i class="fa fa-list-ul" aria-hidden="true"></i> List of all weather stations`;
+      this.getStations();
+      this.msg = `<span class="text-success">Connected to the server!</span>`;
+      const _self = this;
+      setTimeout(() =>{
+        _self.msg = '<span class="px-3"></span>';
+      }, 3000);
     },
     error: function() {
-      this.isConnected = false;
       stations: [],
       this.msg = `<i class="fa fa-frown-o" aria-hidden="true"></i> Some error occured!`;
     },
     disconnect: function() {
-      this.isConnected = false;
       stations: [],
       this.msg = "Disconected from the weather central.";
     },
     reconnecting: function() {
-      this.isConnected = false;
       this.msg = `<i class="fa fa-refresh fa-spin" aria-hidden="true"></i> Reconnecting to the weather central...`;
     },
     broadClient: function(data) {
-      this.station = data;
+     if(data.length === this.stations.length){                
+              this.stations = data;
+        }
+      else{
+        this.getStations();
+      }  
       this.msg = `<i class="fa fa-list-ul" aria-hidden="true"></i> List of all weather stations`;
-      this.isConnected = true;
     }
   },
- /*  mounted: function() {},
+  mounted: function() {
+      this.getStations();
+  },
   methods: {
-   
-  } */
+   getStations: function() {
+          axios.get(`http://localhost:3000/allstations`)
+            .then(res => {
+                const data = res.data;
+                this.stations = data;                
+            })
+            .catch(e => {
+              console.log(e);
+            });
+    }
+  }
 };
 </script>
 

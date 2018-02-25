@@ -28,8 +28,6 @@
   "homepage": "https://github.com/rsmokov/weather-central-demo#readme",
   "dependencies": {
     "express": "^4.16.2",
-    "express-es6-template-engine": "^2.0.2",
-    "node-mysql": "^0.4.2",
     "open": "0.0.5",
     "socket.io": "^2.0.4",
     "sqlite3": "^3.1.13"
