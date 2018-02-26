@@ -348,6 +348,5 @@ Sending js objects via socket.io.
 
 </table>
 
-    npm start
 ## License
 [MIT. Copyright (c)](https://opensource.org/licenses/MIT) Radoslav Smokov.
