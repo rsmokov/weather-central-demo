@@ -18,7 +18,9 @@ function WCentralServer() {
             socket = require('socket.io');
 
         //PARSE BODY ON POST PUT
-        app.use(bodyParser()); 
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.json());
+
         //CORS
         app.use(function (req, res, next) {
             res.setHeader("Access-Control-Allow-Origin", "*");
@@ -90,7 +92,7 @@ function WCentralServer() {
                 
                 db.run(sql, postdata, function(err, row){
                     if(!err && row){
-                        res.json(row);
+                        res.json("updated");
                         }
                     else res.json(err);
                 });
@@ -185,6 +187,7 @@ function WCentralServer() {
             });
             client.on('alloff', function(){
                 io.sockets.clients().emit('wsalloff');
+                io.sockets.clients().emit('clientAlloff');
             });
         });
         

@@ -15,13 +15,14 @@ function WStationsServer() {
     const serverport = 3000;
     // The station holder
     _self.stations = [];
+    let StEmitter = [];
 
     //Generate virtual stations
     _self.generate = function (amount, speed = 2) {
-        amount = parseInt(amount);
-        const StEmitter = [];
-        for (let i = 0; i < amount; i++) {
+        amount = parseInt(amount);        
 
+        for (let i = 0; i < amount; i++) {
+            
             const socket = io('http://localhost:' + serverport);  
             StEmitter[i] = new stationEmitter(i);
             StEmitter[i].bcast(speed);                         
@@ -52,11 +53,9 @@ function WStationsServer() {
                 _self.stations[id].status = 0;
             });
             socket.on('wsalloff', function () {
-                for (let i = 0; i < StEmitter.length; i++) {
-                    StEmitter[i].turnoff();
-                }
+                StEmitter[i].turnoff();
                 _self.stations = [];
-                socket.emit('wsRespondAlloff');                
+                socket.emit('wsRespondAlloff');  
             });
         }        
     }
@@ -66,8 +65,9 @@ function WStationsServer() {
 
         port = (typeof port == 'undefined' ? 3000 : port);
         // Espress setup
-        app.use('/app', express.static(path.join(__dirname, 'app')));
-        app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+       /*  app.use('/app', express.static(path.join(__dirname, 'app')));
+        app.use('/node_modules', express.static(path.join(__dirname, 'node_modules'))); */
+        app.use(express.static(path.join(__dirname, 'ws-control', 'dist')));
 
         app.use(function (req, res, next) {
             res.setHeader("Access-Control-Allow-Origin", "*");
@@ -76,12 +76,10 @@ function WStationsServer() {
         });
 
         /* load app */
-       /*  app.get('/', function (req, res) {
-            res.status(200);
-            res.sendFile('/app/index.html', {
-                root: __dirname
-            });
-        }); */
+        app.get('/', function (req, res) {
+            res.render(path.join(__dirname, 'ws-control', 'index.html'));
+        });
+
         // Generate given amount of virtual weather stations
         app.get('/generate/:count', function (req, res) {
             res.status(200);
@@ -98,7 +96,7 @@ function WStationsServer() {
 
         //Init weather stations management server
         app.listen(port);
-       // open('http://localhost:' + port);
+        open('http://localhost:' + port);
         console.log('Weather stations management server started.');
     }
 }

@@ -19,26 +19,46 @@
   </div>
   <div class="container">   
     <hr>
-    <div v-if="stations.length > 0">
-          <ul class="mt-5 col-md-6 col-sm-12 mx-auto py-3 card" v-if="stations && stations.length > 0">
-          <li class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="station in stations" :key="station.id" >
-            <div class="col-sm-4 row align-content-center">
+    <div v-if="stations || stations_cache">
+          <ul class="mt-5 col-md-6 col-sm-12 mx-auto py-3 card" v-if="stations.length > 0 || stations_cache.length > 0">
+          <li class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station, index) in stations" :key="index" >
+            <div class="col-sm-4 row align-content-center" v-if="station">
               <div class="col-12 small" v-if="station.id !== undefined">
                 Station ID - {{station.id}} 
               </div>
-               <div class="col-12">
+               <div class="col-12" v-if="station">
                     <span v-if="station.status === undefined || station.status === 0" class="badge grey lighten-1 p-2">offline</span>
                     <span v-if="station.status !== undefined && station.status === 1" class="badge badge-success p-2">online</span>
                     <span v-if="station.status !== undefined && station.status === 2" class="badge badge-danger p-2">maintance</span>
                </div>                
             </div>        
-            <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2">
-              <div class="row text-right pr-0 pr-xl-5">
+            <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2" v-if="station">
+              <div class="row text-right pr-0 pr-xl-5" >
                   <div class="col-12">Temperature: <span v-if="station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
                   <div class="col-12">Humidity: <span v-if="station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
               </div>             
             </div>    
-            <router-link class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
+            <router-link v-if="station" class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
+                Last 24h
+            </router-link>            
+          </li>
+          <!-- CAHED STATIONS -->
+          <li v-if="!stations[station_c.id]" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
+              <div class="col-sm-4 row align-content-center" v-if="station_c">
+              <div class="col-12 small" v-if="station_c.id !== undefined">
+                Station ID - {{station_c.id}} 
+              </div>
+               <div class="col-12">
+                    <span class="badge grey lighten-1 p-2">offline</span>
+               </div>                
+            </div>        
+            <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2" v-if="station_c">
+              <div class="row text-right pr-0 pr-xl-5">
+                  <div class="col-12">Temperature: </div>              
+                  <div class="col-12">Humidity: </div>              
+              </div>             
+            </div>    
+            <router-link v-if="station_c" class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station_c.id, loc_name: station_c.loc_name }}">
                 Last 24h
             </router-link>            
           </li>
@@ -63,6 +83,7 @@ export default {
     return {
       msg: `<span class="px-3"></span>`,
       stations: [],
+      stations_cache : [],
       stationStatus: []
     };
   },
@@ -87,13 +108,12 @@ export default {
       this.msg = `<i class="fa fa-refresh fa-spin" aria-hidden="true"></i> Reconnecting to the weather central...`;
     },
     broadClient: function(data) {
-     if(data.length === this.stations.length){                
-              this.stations = data;
-        }
-      else{
-        this.getStations();
-      }  
+      this.stations = data;
       this.msg = `<i class="fa fa-list-ul" aria-hidden="true"></i> List of all weather stations`;
+    },
+    clientAlloff: function(){
+        this.stations = [];
+        this.getStations();
     }
   },
   mounted: function() {
@@ -103,8 +123,8 @@ export default {
    getStations: function() {
           axios.get(`http://localhost:3000/allstations`)
             .then(res => {
-                const data = res.data;
-                this.stations = data;                
+                const data = res.data;        
+                this.stations_cache = data;                
             })
             .catch(e => {
               console.log(e);

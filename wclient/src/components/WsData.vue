@@ -1,7 +1,7 @@
 <template>
   <div>
       <div class="row align-items-end white">
-        <div class="col-auto">
+        <div class="col-auto mb-3 mb-sm-0">
           <div class="badge badge-pill p-0">   
             <div class="row">
               <img class="img-fluid white rounded-circle p-2 col-3" src="../assets/direction-weather-sm.png">
@@ -12,28 +12,31 @@
             </div>  
           </div>
         </div>  
-        <div class="col-sm-6 mb-3">
-            
-            <h1 class="h2-responsive text-center m-0" :class="classHeader">          
-              <i class="fa" :class="station && station.status !== 1 ? 'fa-power-off': 'fa-wifi'" aria-hidden="true"></i>
-              Weather Station  
-              <span v-if="!loc_name || changename">ID: {{stationId}}</span>
-              <span v-else v-on:click.self="changename = true" class="underlined">{{loc_name}}</span>
-            </h1>
-                <form class="row col-md-8 mx-auto my-0 p-0" v-if="!loc_name || changename" v-on:submit="stationName(station.id)">
-                  <div class="col-md-9 m-auto p-0 md-form">
-                      <input
-                        @blur="changename = false"
-                        @focus="changename = true"
-                        type="text" placeholder="Type a name" v-model="loc_name_temp"
-                        class="form-control h-100 m-auto p-0"> 
-                  </div>
-                  <div class="row" v-if="changename">
-                      <button v-on:click="stationName(station.id)" class="btn btn-info btn-sm col-auto" v-bind:disabled="!loc_name_temp || loc_name_temp.length < 2">
-                          <i class="fa fa-check" aria-hidden="true"></i>
-                      </button>
-                  </div>                 
-              </form>  
+        <div class="col-sm-8 col-md-6 mb-3 row">
+            <div class="col-2 d-flex align-items-center h1-responsive" :class="classHeader">
+                  <i class="fa" :class="station && station.status !== 1 ? 'fa-power-off': 'fa-wifi'" aria-hidden="true"></i>
+            </div>
+            <div class="col-auto">
+                  <p class="text-left m-0" > 
+                    Weather Station ID: {{stationId}}
+                  </p>
+                  <form class=" mx-auto my-0 p-0 row h4-responsive" v-on:submit="stationName(station.id)">  
+                    <div class="col-auto my-auto p-0 md-form">Location : </div>   
+                    <p v-on:click.self="changename = true" v-if="loc_name && !changename" class="mx-2 my-0 underlined text-capitalize">{{loc_name}}</p>                          
+                    <div class="col-md-7 m-auto p-0 md-form"  v-if="!loc_name || changename">   
+                        <div class="row" >                          
+                            <input 
+                              @blur="changename = false"
+                              @focus="changename = true"
+                              type="text" placeholder="Type a name" v-model="loc_name_temp"
+                              class="form-control h-100 m-auto p-0 col-8"> 
+                            <button v-if="changename || loc_name_temp.length > 2 " v-on:click="stationName(station.id)" class="btn btn-info p-1 col-2" v-bind:disabled="!loc_name_temp || loc_name_temp.length < 2">
+                              <i class="fa fa-check" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>           
+                </form>  
+            </div>
         </div>    
         <div class="col-sm-3  mb-3">
           <router-link class="btn btn-amber" :to="{ name: 'StationsList'}">
@@ -107,8 +110,8 @@ export default {
         'record_time': []
       },
       changename: false,
-      loc_name: null,
-      loc_name_temp: null
+      loc_name: "",
+      loc_name_temp: ""
     };
   },
   sockets: {
@@ -128,7 +131,12 @@ export default {
     },
     broadClient: function(data) {
       const id = this.$route.params.id;
-      this.station = data[id]
+      this.station = data[id];
+    /*   this.stationData['temp'].push(this.station['temp']);
+      this.stationData['hum'].push(this.station['hum']);
+      let date = new Date();
+      this.stationData['record_time'].push(`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);   
+      console.log("emit"); */
     }
   },
   computed: {
@@ -194,7 +202,7 @@ export default {
                 data.forEach(row => {
                   this.stationData['temp'].push(row['temp']);
                   this.stationData['hum'].push(row['hum']);
-                  this.stationData['record_time'].push(row['record_time']);                  
+                  this.stationData['record_time'].push(row['record_time'].substr(row['record_time'].length - 8));                  
                 });
             })
             .catch(e => {
@@ -202,17 +210,18 @@ export default {
             });
     },
     stationName: function(id) {
-        axios.put(`http://localhost:3000/changename/1`,
+        axios.put(`http://localhost:3000/changename/${this.$route.params.id}`,
          {loc_name: this.loc_name_temp},
          {headers:{'Content-Type': 'application/json; charset=utf-8'}}
          )
             .then(res => {
+                this.changename = false;
                 this.getStation();
             })
             .catch(e => {
               console.log(e);
             });
-        this.changename = false;
+        
     },
     getStation: function() {
           axios.get(`http://localhost:3000/wsunit/${this.$route.params.id}`)

@@ -6,7 +6,7 @@ const open = require('open'),
     wstationsServer = require('./wstations/index');
 
   wcentralServer.run(3000);
-//  wcentralClient.run(4000);
+  wcentralClient.run(4000);
   wstationsServer.run(5000);
  
     
