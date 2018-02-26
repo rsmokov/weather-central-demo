@@ -48,9 +48,9 @@ The app consist of three components.
 
 *   [station.js](./wstations/station.js)  / The Station unit Abstraction
 
-*   the control panel a Vue.js application under **./wstations/ws-control**
+*   the control panel a Vue.js application under [./wstations/ws-control](./wstations/ws-control)
 
-1.  The Client application a Vue.js application under **./wclient**
+1.  The Client application a Vue.js application under [./wclient](./wclient)
 
 **Database Shema**
 
