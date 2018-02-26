@@ -8,45 +8,45 @@
 
 <font face="Ubuntu">[https://www.npmjs.com/package/sqlite3#source-install](https://www.npmjs.com/package/sqlite3#source-install)</font> <font face="Ubuntu"><span style="background: transparent">The app is Node.js based, so to run you have to install it.</span> </font><font color="#333333"><font face="Ubuntu"><span style="background: transparent">Node.js 0.10 or higher is required.</span> </font></font>[<font face="Ubuntu"><span style="background: transparent">More details</span></font>](https://docs.npmjs.com/getting-started/installing-node)
 
-### <span style="background: transparent">How its made</span>
+### How its made
 
 <span style="background: transparent"><font face="Ubuntu">- Backend : Node.js,</font> [<font face="Ubuntu">Express</font>](https://expressjs.com/)</span>
 
 <span style="background: transparent"><font face="Ubuntu">- Frontend: [Vue.js](https://vuejs.org/)</font></span>
 
-# Installation
+### Installation
 
 Clone this repo
-
+```sh
 $ git clone [https://github.com/rsmokov/weather-central-demo.git](https://github.com/rsmokov/weather-central-demo.git)
-
+```
 And navigate to the folder
-
-$cd weather-central-demo
-
+```sh
+$ cd weather-central-demo
+```
 Open the terminal / bash and run
-
+```sh
 $ npm install
-
-<font size="2">If an issue with the installation of the sqlite3 plugin occurs, than you must force to build installation from source.</font> [<font size="2">For more details see here</font>](https://www.npmjs.com/package/sqlite3#source-install)<font size="2">.</font>
+```
+> **Note:**If an issue with the installation of the sqlite3 plugin occurs, than you must force to build installation from source.</font> [<font size="2">For more details see here</font>](https://www.npmjs.com/package/sqlite3#source-install)<font size="2">.</font>
 
 ### How to run the Application
 
 Navigate to the main folder and just run :
-
+```sh
 $ npm start
-
+```
 ### Application Structure
 
 The app consist of three components.
 
-1.  The Server /_comunication between the weather stations and the client_ / located under **./**<span style="font-style: normal">**wcentral**</span>
+1.  The Server /_comunication between the weather stations and the client_ / located under [./wcentral](./wcentral)
 
-2.  The Weather stations. Managed and controlled by the **stations server and generator** /.The control panel is located under
+2.  The Weather stations. Managed and controlled by the **stations server and generator** [./wstations](./wstations) /.The control panel is located under
 
-*   **./wstations** **index.js** the server / stations generator
+*   [index.js](./wstations/index.js)  the server / stations generator
 
-*   **station.js** / The Station unit Abstraction
+*   [station.js](./wstations/station.js)  / The Station unit Abstraction
 
 *   the control panel a Vue.js application under **./wstations/ws-control**
 
@@ -54,9 +54,9 @@ The app consist of three components.
 
 **Database Shema**
 
-![](README_html_m6cc14e22.png)  
+![](./docu/schema.png)  
 
-<span style="font-weight: normal">Table for the weather station unit and table for the data emitted by each weather station.</span>
+>Table for the weather station unit and table for the data emitted by each weather station.
 
 ### Communication protocol for the Weather Stations and the Main Server
 
