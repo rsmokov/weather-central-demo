@@ -18,7 +18,7 @@
 
 Clone this repo
 ```sh
-$ git clone [https://github.com/rsmokov/weather-central-demo.git](https://github.com/rsmokov/weather-central-demo.git)
+$ git clone https://github.com/rsmokov/weather-central-demo.git
 ```
 And navigate to the folder
 ```sh
