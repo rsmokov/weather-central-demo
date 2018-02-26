@@ -6,7 +6,7 @@
 
 <font face="Ubuntu">The app does not support IE8 and below, because it uses ECMAScript 5 features that are un-shimmable in IE8\. However it supports all ECMAScript 5 compliant browsers.</font>
 
-<font face="Ubuntu">[https://www.npmjs.com/package/sqlite3#source-install](https://www.npmjs.com/package/sqlite3#source-install)</font> <font face="Ubuntu"><span style="background: transparent">The app is Node.js based, so to run you have to install it.</span> </font><font color="#333333"><font face="Ubuntu"><span style="background: transparent">Node.js 0.10 or higher is required.</span> </font></font>[<font face="Ubuntu"><span style="background: transparent">More details</span></font>](https://docs.npmjs.com/getting-started/installing-node)
+<font face="Ubuntu"><font face="Ubuntu"><span style="background: transparent">The app is Node.js based, so to run you have to install it.</span> </font><font color="#333333"><font face="Ubuntu"><span style="background: transparent">Node.js 0.10 or higher is required.</span> </font></font>[<font face="Ubuntu"><span style="background: transparent">More details</span></font>](https://docs.npmjs.com/getting-started/installing-node)
 
 ### How its made
 
