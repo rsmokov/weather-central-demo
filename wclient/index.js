@@ -11,12 +11,8 @@ function WCentralClient() {
     this.run = function (port) {
         port = (typeof port == 'undefined' ? 3000 : port);
         //app.use(express.static(path.join(__dirname, 'node_modules')));
-        app.use(express.static(path.join(__dirname, 'dist')));/* 
-        app.use(express.static(path.join(__dirname, 'dist', 'static')));
-        app.use(express.static(path.join(__dirname, 'dist', 'static', 'js')));
-        app.use(express.static(path.join(__dirname, 'dist', 'static', 'css'))); */
+        app.use(express.static(path.join(__dirname, 'dist')));
         app.set('views', __dirname );
-        app.engine('html', require('ejs').renderFile);
         app.set('view engine', 'html');
 
         app.get('/', function (req, res) {

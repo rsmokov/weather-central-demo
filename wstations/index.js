@@ -65,8 +65,7 @@ function WStationsServer() {
 
         port = (typeof port == 'undefined' ? 3000 : port);
         // Espress setup
-       /*  app.use('/app', express.static(path.join(__dirname, 'app')));
-        app.use('/node_modules', express.static(path.join(__dirname, 'node_modules'))); */
+       
         app.use(express.static(path.join(__dirname, 'ws-control', 'dist')));
 
         app.use(function (req, res, next) {
