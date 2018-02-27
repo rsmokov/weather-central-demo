@@ -34,8 +34,8 @@
             </div>        
             <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2" v-if="station">
               <div class="row text-right pr-0 pr-xl-5" >
-                  <div class="col-12">Temperature: <span v-if="station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
-                  <div class="col-12">Humidity: <span v-if="station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
+                  <div class="col-12">Temperature: <span v-if="station.status === 1 && station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
+                  <div class="col-12">Humidity: <span v-if="station.status === 1 && station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
               </div>             
             </div>    
             <router-link v-if="station" class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
