@@ -162,7 +162,7 @@ Sending js objects via socket.io.
 
 <font size="2">hum: “humidity”,</font>
 
-<font size="2">status: “state”</font>
+<font size="2">status: “0(offline) or 1(online) or 2(maintance)”</font>
 
 <font size="2">}</font>
 
