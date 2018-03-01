@@ -28,6 +28,29 @@ Open the terminal / bash and run
 ```sh
 $ npm install
 ```
+
+**To build the weather stations control panel** from the source navidate to the folder [./wstations/ws-control](./wstations/ws-control)
+Open the terminal / bash and run
+```sh
+$ npm install
+```
+to install all the dependancies and 
+```sh
+$ npm run build 
+```
+to build the application from the source code.
+
+**To build the client app** navigate to  [./wclient](./wclient)
+Open the terminal / bash and run
+```sh
+$ npm install
+```
+to install all the dependancies and 
+```sh
+$ npm run build 
+```
+to build the application.
+
 > **Note:**If an issue with the installation of the sqlite3 plugin occurs, than you must force to build installation from source.</font> [<font size="2">For more details see here</font>](https://www.npmjs.com/package/sqlite3#source-install)<font size="2">.</font>
 
 ### How to run the Application
