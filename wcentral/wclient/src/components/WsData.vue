@@ -12,7 +12,7 @@
             </div>  
           </div>
         </div>  
-        <div class="col-sm-8 col-md-6 mb-3 row">
+        <div class="col-sm-auto justify-content-center col-md-6 mb-3 row">
             <div class="col-2 d-flex align-items-center h1-responsive" :class="classHeader">
                   <i class="fa" :class="station && station.status !== 1 ? 'fa-power-off': 'fa-wifi'" aria-hidden="true"></i>
             </div>
@@ -38,7 +38,7 @@
                 </form>  
             </div>
         </div>    
-        <div class="col-sm-3  mb-3">
+        <div class="col-auto  mb-3">
           <router-link class="btn btn-amber" :to="{ name: 'StationsList'}">
                 back
             </router-link>
@@ -111,7 +111,8 @@ export default {
       },
       changename: false,
       loc_name: "",
-      loc_name_temp: ""
+      loc_name_temp: "",
+      hostname: 'http://' + window.location.hostname
     };
   },
   sockets: {
@@ -131,7 +132,7 @@ export default {
     },
     broadClient: function(data) {
       const id = this.$route.params.id;
-      if(data && data.status === 1){
+      if(data[id] && data[id].status === 1){
           this.station = data[id];
       }
     }
@@ -193,7 +194,7 @@ export default {
   },  
   methods: {
     getData: function() {
-           axios.get(`http://localhost:3000/wsdata/${this.$route.params.id}`)
+           axios.get(`${this.hostname}:3000/wsdata/${this.$route.params.id}`)
             .then(res => {
                 const data = res.data;
                 data.forEach(row => {
@@ -207,7 +208,7 @@ export default {
             });
     },
     stationName: function(id) {
-        axios.put(`http://localhost:3000/changename/${this.$route.params.id}`,
+        axios.put(`${this.hostname}:3000/changename/${this.$route.params.id}`,
          {loc_name: this.loc_name_temp},
          {headers:{'Content-Type': 'application/json; charset=utf-8'}}
          )
@@ -221,7 +222,7 @@ export default {
         
     },
     getStation: function() {
-          axios.get(`http://localhost:3000/wsunit/${this.$route.params.id}`)
+          axios.get(`${this.hostname}:3000/wsunit/${this.$route.params.id}`)
             .then(res => {
                 const data = res.data;
                 this.loc_name = data.loc_name;                

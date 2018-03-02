@@ -14,8 +14,8 @@ import 'mdbootstrap/css/bootstrap.css'
 import 'mdbootstrap/css/mdb.css'
 import 'font-awesome/css/font-awesome.css'
 
-
-export const SocketInstance = socketio('http://localhost:3000')
+var hostname = 'http://' + window.location.hostname;
+export const SocketInstance = socketio( hostname + ':3000')
 
 Vue.use(VueSocketIO, SocketInstance, Bar, Line, VueCharts, axios, VueAxios)
 
