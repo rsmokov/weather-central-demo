@@ -40,7 +40,7 @@ $ npm run build
 ```
 to build the application from the source code.
 
-**To build the client app** navigate to  [./wclient](./wclient)
+**To build the client app** navigate to  [./wcentral/wclient](./wcentral/wclient)
 Open the terminal / bash and run
 ```sh
 $ npm install
@@ -73,7 +73,7 @@ The app consist of three components.
 
 *   the control panel a Vue.js application under [./wstations/ws-control](./wstations/ws-control)
 
-1.  The Client application a Vue.js application under [./wclient](./wclient)
+1.  The Client application a Vue.js application under [./wcentral/wclient](./wcentral/wclient)
 
 **Database Shema**
 
