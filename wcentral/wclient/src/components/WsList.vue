@@ -20,17 +20,15 @@
   <div class="container">   
     <hr>
     <div v-if="stations || stations_cache">
-          <ul class="mt-5 col-lg-6 col-md-9 col-sm-12 mx-auto py-3 card" v-if="stations.length > 0 || stations_cache.length > 0">
-          <li v-if="station.status !== 0" class="row d-flex align-items-center justify-content-center mb-0 mt-3 station-link" v-for="(station, index) in stations" :key="index" >
-            <div class="col-8 col-sm-4 row align-content-center" v-if="station">
-              <div class="col-12 small" v-if="station.id !== undefined">
+          <ul class="mt-5 col-lg-6 col-md-9 col-sm-12 mx-auto card" v-if="stations.length > 0 || stations_cache.length > 0">
+          <li v-if="station.status !== 0" class="row d-flex align-items-center justify-content-around pt-3 mb-3 station-link" v-for="(station, index) in stations" :key="index" >
+            <div class="col-12 grey lighten-4 row align-content-center mb-3" v-if="station">             
+              <span v-if="station.status === undefined || station.status === 0" class="badge grey lighten-1 p-2">offline</span>
+              <span v-if="station.status !== undefined && station.status === 1" class="badge badge-success p-2">online</span>
+              <span v-if="station.status !== undefined && station.status === 2" class="badge badge-danger p-2">maintance</span> 
+              <span class="small px-3 py-1" v-if="station.id !== undefined">
                 Station ID - {{station.id}} 
-              </div>
-               <div class="col-12" v-if="station">
-                    <span v-if="station.status === undefined || station.status === 0" class="badge grey lighten-1 p-2">offline</span>
-                    <span v-if="station.status !== undefined && station.status === 1" class="badge badge-success p-2">online</span>
-                    <span v-if="station.status !== undefined && station.status === 2" class="badge badge-danger p-2">maintance</span>
-               </div>                
+              </span>                          
             </div>        
             <div class="md-form col-sm-5 d-block mt-3 mt-md-0 p-0 my-2 mx-2" v-if="station">
               <div class="row text-right pr-0 pr-xl-5" >
@@ -40,18 +38,15 @@
             </div>    
             <router-link v-if="station" class="col-auto btn btn-sm btn-light-green my-3" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
                 Last 24h
-            </router-link>     
-            <hr class="col-11 mt-3">       
+            </router-link>          
           </li>
           <!-- CAHED STATIONS -->
-          <li v-if="!stations[station_c.id] || stations[station_c.id].status === 0" class="row d-flex align-items-center justify-content-center mb-0 mt-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
-              <div class="col-8 col-sm-4 row align-content-center" v-if="station_c">
-              <div class="col-12 small" v-if="station_c.id !== undefined">
-                Station ID - {{station_c.id}} 
-              </div>
-               <div class="col-12">
-                    <span class="badge grey lighten-1 p-2">offline</span>
-               </div>                
+          <li v-if="!stations[station_c.id] || stations[station_c.id].status === 0" class=" mb-3 row d-flex align-items-center justify-content-around pt-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
+              <div class="col-12 grey lighten-4 row align-content-center  mb-3" v-if="station_c">              
+                <span class="badge grey lighten-1 p-2">offline</span>
+                <span class="small px-3 py-1" v-if="station_c.id !== undefined">
+                  Station ID - {{station_c.id}} 
+                </span>
             </div>        
             <div class="md-form col-sm-5 mt-3 mt-md-0 p-0 my-2 mx-2 d-none d-sm-block" v-if="station_c">
               <div class="row text-right pr-0 pr-xl-5">
@@ -61,8 +56,7 @@
             </div>    
             <router-link v-if="station_c" class="col-auto btn btn-sm btn-light-green my-3" :to="{ name: 'StationData', params: { id: station_c.id, loc_name: station_c.loc_name }}">
                 Last 24h
-            </router-link>                 
-            <hr class="col-11 mt-3">          
+            </router-link>                      
           </li>
         </ul>
         <p v-else class="h4-responsive text-danger text-center">
