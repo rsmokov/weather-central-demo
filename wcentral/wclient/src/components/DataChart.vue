@@ -74,14 +74,6 @@
           ]
         };
       }
-    },
-    watch: {
-      wData: function(newVal, oldVal){
-        console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-        /* setTimeout(() => {
-        this.fillData();
-          }, 300); */
-      }
     }
   }
 </script>

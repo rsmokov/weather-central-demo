@@ -7,10 +7,6 @@ import VueAxios from 'vue-axios'
 import socketio from 'socket.io-client'
 import VueSocketIO from 'vue-socket.io'
 
-/* import 'mdbootstrap/css/bootstrap.css'
-import 'mdbootstrap/css/mdb.css'
-import 'font-awesome/css/font-awesome.css' */
-
 export const SocketInstance = socketio('http://localhost:3000')
 
 Vue.use(VueSocketIO, SocketInstance, VueAxios, axios)

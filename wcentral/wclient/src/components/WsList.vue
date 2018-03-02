@@ -12,7 +12,7 @@
         </div>  
       </div>
     </div>  
-    <div class="col-auto">
+    <div class="col-sm-7 col-md-8">
         <h1 class="h3-responsive text-center mt-3" >List of all weather stations</h1>  
         <p class="blue-grey-text" v-html="msg"></p>
     </div>    
@@ -20,9 +20,9 @@
   <div class="container">   
     <hr>
     <div v-if="stations || stations_cache">
-          <ul class="mt-5 col-md-6 col-sm-12 mx-auto py-3 card" v-if="stations.length > 0 || stations_cache.length > 0">
-          <li v-if="station.status !== 0" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station, index) in stations" :key="index" >
-            <div class="col-sm-4 row align-content-center" v-if="station">
+          <ul class="mt-5 col-lg-6 col-md-9 col-sm-12 mx-auto py-3 card" v-if="stations.length > 0 || stations_cache.length > 0">
+          <li v-if="station.status !== 0" class="row d-flex align-items-center justify-content-center mb-0 mt-3 station-link" v-for="(station, index) in stations" :key="index" >
+            <div class="col-8 col-sm-4 row align-content-center" v-if="station">
               <div class="col-12 small" v-if="station.id !== undefined">
                 Station ID - {{station.id}} 
               </div>
@@ -32,19 +32,20 @@
                     <span v-if="station.status !== undefined && station.status === 2" class="badge badge-danger p-2">maintance</span>
                </div>                
             </div>        
-            <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2" v-if="station">
+            <div class="md-form col-sm-5 d-block mt-3 mt-md-0 p-0 my-2 mx-2" v-if="station">
               <div class="row text-right pr-0 pr-xl-5" >
-                  <div class="col-12">Temperature: <span v-if="station.status === 1 && station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
-                  <div class="col-12">Humidity: <span v-if="station.status === 1 && station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
+                  <div class="col-12 text-center text-sm-right">Temperature: <span v-if="station.status === 1 && station.temp" class="ml-2 badge amber darken-2 p1">{{station.temp}}&#8451</span></div>              
+                  <div class="col-12 text-center text-sm-right">Humidity: <span v-if="station.status === 1 && station.hum" class="ml-2 badge cyan p1">{{station.hum}}%</span></div>              
               </div>             
             </div>    
-            <router-link v-if="station" class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
+            <router-link v-if="station" class="col-auto btn btn-sm btn-light-green my-3" :to="{ name: 'StationData', params: { id: station.id, loc_name: station.loc_name }}">
                 Last 24h
-            </router-link>            
+            </router-link>     
+            <hr class="col-11 mt-3">       
           </li>
           <!-- CAHED STATIONS -->
-          <li v-if="!stations[station_c.id] || stations[station_c.id].status === 0" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
-              <div class="col-sm-4 row align-content-center" v-if="station_c">
+          <li v-if="!stations[station_c.id] || stations[station_c.id].status === 0" class="row d-flex align-items-center justify-content-center mb-0 mt-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
+              <div class="col-8 col-sm-4 row align-content-center" v-if="station_c">
               <div class="col-12 small" v-if="station_c.id !== undefined">
                 Station ID - {{station_c.id}} 
               </div>
@@ -52,15 +53,16 @@
                     <span class="badge grey lighten-1 p-2">offline</span>
                </div>                
             </div>        
-            <div class="md-form col-md-5 mt-3 mt-md-0 p-0 my-0 mx-2" v-if="station_c">
+            <div class="md-form col-sm-5 mt-3 mt-md-0 p-0 my-2 mx-2 d-none d-sm-block" v-if="station_c">
               <div class="row text-right pr-0 pr-xl-5">
-                  <div class="col-12">Temperature: </div>              
-                  <div class="col-12">Humidity: </div>              
+                  <div class="col-12 text-center text-sm-right">Temperature: </div>              
+                  <div class="col-12  text-center text-sm-right">Humidity: </div>              
               </div>             
             </div>    
-            <router-link v-if="station_c" class="col-auto btn btn-sm btn-light-green text-" :to="{ name: 'StationData', params: { id: station_c.id, loc_name: station_c.loc_name }}">
+            <router-link v-if="station_c" class="col-auto btn btn-sm btn-light-green my-3" :to="{ name: 'StationData', params: { id: station_c.id, loc_name: station_c.loc_name }}">
                 Last 24h
-            </router-link>            
+            </router-link>                 
+            <hr class="col-11 mt-3">          
           </li>
         </ul>
         <p v-else class="h4-responsive text-danger text-center">
@@ -84,7 +86,8 @@ export default {
       msg: `<span class="px-3"></span>`,
       stations: [],
       stations_cache : [],
-      stationStatus: []
+      stationStatus: [],
+      hostname: 'http://' + window.location.hostname
     };
   },
   sockets: {
@@ -121,7 +124,7 @@ export default {
   },
   methods: {
    getStations: function() {
-          axios.get(`http://localhost:3000/allstations`)
+          axios.get(`${this.hostname}:3000/allstations`)
             .then(res => {
                 const data = res.data;        
                 this.stations_cache = data;                

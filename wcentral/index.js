@@ -9,6 +9,7 @@ function WCentralServer() {
         //Load modules
         const express = require('express'),
             path = require('path'),
+            open = require('open'),
             dbPath = path.resolve(__dirname, 'sqlite3/weather.sqlite3'),
             app = express(),
             sqlite3 = require('sqlite3').verbose(),
@@ -45,11 +46,14 @@ function WCentralServer() {
             db.run("CREATE TABLE IF NOT EXISTS ws_unit (id INTEGER PRIMARY KEY, loc_name VARCHAR)");
             db.run("CREATE TABLE IF NOT EXISTS ws_data (id INTEGER PRIMARY KEY AUTOINCREMENT, unit_id INTEGER, temp INTEGER, hum INTEGER, record_time TEXT)");
         });   
-        //CORS setup for the server
-        app.use(function (req, res, next) {
-            res.setHeader("Access-Control-Allow-Origin", "*");
-            res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            next();
+
+        // Client App on
+        app.use(express.static(path.join(__dirname, 'wclient', 'dist')));
+        app.set('views', __dirname );
+        app.set('view engine', 'html');
+
+        app.get('/', function (req, res) {
+            res.render(path.join(__dirname, 'wclient', 'index.html'));
         });
 
         // API REQUESTS
@@ -104,15 +108,7 @@ function WCentralServer() {
         app.use(function (req, res, next) {
              res.status(404).json({ error: 'Not existing.' });
          }); 
-        //  
-/* 
-        app.use(function (err, req, res, next) {
-            res.status(statusCode >= 100 && statusCode < 600 ? err.code : 500);
-            res.json('error', {
-                message: err.message,
-                error: {}
-            });
-        }); */
+
         // Initialize the socket server
         const io = socket(server);
         io.on('connection', function (client) {
@@ -192,6 +188,8 @@ function WCentralServer() {
         });
         
         console.log('Wheater central started.');
+
+        open('http://localhost:' + port);
 
     }
 }
