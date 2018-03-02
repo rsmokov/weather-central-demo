@@ -65,7 +65,6 @@ function StationEmitter(id) {
     _self.id = id;
     _self.temp = null;
     _self.hum = null;
-    //_self.status = 0;
 
     // functional props
     _self.interval = null;
@@ -137,6 +136,7 @@ function StationEmitter(id) {
     // turn off station
     _self.turnoff = function () {        
         clearInterval(_self.interval);
+        _self.emit('stationoff', _self.id);
     }
     // maintance mode
     _self.maintance = function () {

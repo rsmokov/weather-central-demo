@@ -131,12 +131,9 @@ export default {
     },
     broadClient: function(data) {
       const id = this.$route.params.id;
-      this.station = data[id];
-    /*   this.stationData['temp'].push(this.station['temp']);
-      this.stationData['hum'].push(this.station['hum']);
-      let date = new Date();
-      this.stationData['record_time'].push(`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);   
-      console.log("emit"); */
+      if(data && data.status === 1){
+          this.station = data[id];
+      }
     }
   },
   computed: {
