@@ -18,9 +18,4 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.ws-logo{
-    background-image: url(../static/clouds.jpeg);
-    background-repeat: no-repeat;
-    background-size: cover;
-}
 </style>

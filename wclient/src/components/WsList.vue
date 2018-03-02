@@ -21,7 +21,7 @@
     <hr>
     <div v-if="stations || stations_cache">
           <ul class="mt-5 col-md-6 col-sm-12 mx-auto py-3 card" v-if="stations.length > 0 || stations_cache.length > 0">
-          <li class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station, index) in stations" :key="index" >
+          <li v-if="station.status !== 0" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station, index) in stations" :key="index" >
             <div class="col-sm-4 row align-content-center" v-if="station">
               <div class="col-12 small" v-if="station.id !== undefined">
                 Station ID - {{station.id}} 
@@ -43,7 +43,7 @@
             </router-link>            
           </li>
           <!-- CAHED STATIONS -->
-          <li v-if="!stations[station_c.id]" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
+          <li v-if="!stations[station_c.id] || stations[station_c.id].status === 0" class="row d-flex align-items-center justify-content-center mb-5 mb-md-2 p-3 station-link" v-for="(station_c, index) in stations_cache" :key="index+'c'" >
               <div class="col-sm-4 row align-content-center" v-if="station_c">
               <div class="col-12 small" v-if="station_c.id !== undefined">
                 Station ID - {{station_c.id}} 
@@ -97,11 +97,11 @@ export default {
       }, 3000);
     },
     error: function() {
-      stations: [],
+      this.stations = [];
       this.msg = `<i class="fa fa-frown-o" aria-hidden="true"></i> Some error occured!`;
     },
-    disconnect: function() {
-      stations: [],
+    disconnect: function() {      
+      this.stations = [];
       this.msg = "Disconected from the weather central.";
     },
     reconnecting: function() {

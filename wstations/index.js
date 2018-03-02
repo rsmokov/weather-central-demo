@@ -37,10 +37,17 @@ function WStationsServer() {
             });
             // Emit via socket on weather station data emission
             StEmitter[i].on('send', function (data) {
-                _self.stations[i] = data;
-                socket.emit('wsEmitDB', data);
-                socket.emit('wsEmitViewr', _self.stations);
-            });        
+                    _self.stations[i] = data;
+                    socket.emit('wsEmitDB', data);
+                    socket.emit('wsEmitViewr', _self.stations);
+            });  
+            StEmitter[i].on('stationoff', function (id) {
+                if(_self.stations[id]){
+                    _self.stations[id].status = 0;
+                    _self.stations[id].temp = null;
+                    _self.stations[id].hum = null;
+                }
+            });  
             //client to client turn station off
             socket.on('wsmaintance', function (id) {
                 StEmitter[id].maintance();
@@ -49,8 +56,9 @@ function WStationsServer() {
                 StEmitter[id].backon();
             });
             socket.on('wsturnoff', function (id) {
-                StEmitter[id].turnoff();
-                _self.stations[id].status = 0;
+                if(id === i){
+                    StEmitter[id].turnoff();
+                }
             });
             socket.on('wsalloff', function () {
                 StEmitter[i].turnoff();

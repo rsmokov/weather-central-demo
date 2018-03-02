@@ -42,12 +42,13 @@
         broadClient: function(data) {
           const id = this.$route.params.id;
           this.station = data[id];
-          this.wData['temp'].push(this.station['temp']);
-          this.wData['hum'].push(this.station['hum']);
-          let date = new Date();
-          this.wData['record_time'].push(`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
-         //// console.log("emit");
-          this.fillData();
+          if(data[id] && data[id].status !== 0){
+              this.wData['temp'].push(this.station['temp']);
+              this.wData['hum'].push(this.station['hum']);
+              let date = new Date();
+              this.wData['record_time'].push(`${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`);
+              this.fillData();
+          }
         }
       },
     methods: {

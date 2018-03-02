@@ -93,6 +93,7 @@ export default {
     },
     broadClient: function(data) {  
       this.stations = data;
+      console.log(JSON.stringify(data))
       this.msg = `<i class="fa fa-list-ul" aria-hidden="true"></i> List of all weather stations`;
       this.isConnected = true;
       if(data.length < 1){
